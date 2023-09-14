@@ -1,9 +1,9 @@
 {
   description = "A basic flake with a shell";
   inputs = {
-    nixpkgs.url = "nixpkgs";
+    # nixpkgs.url = "nixpkgs";
     nixpkgs-unfree.url = "github:numtide/nixpkgs-unfree";
-    nixpkgs-unfree.inputs.nixpkgs.follows = "unstable";
+    nixpkgs-unfree.inputs.nixpkgs.follows = "nixpkgs";
 
     unstable.url = "nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
@@ -37,7 +37,7 @@
         ];
         buildInputs = [
           (
-            unfree.python3.withPackages
+            pkgs.python310.withPackages
             (ps:
               with ps; [
                 jupyter
@@ -63,7 +63,7 @@
                 # stingray
                 pyfftw
                 numba
-                torch-bin
+                unfree.python310Packages.torch-bin
               ])
           )
         ];
