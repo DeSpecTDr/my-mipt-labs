@@ -7,34 +7,95 @@
   set document(title: number + " " + title)
   set text(lang: "ru", size: 12pt)
   set page(margin: 1.5cm, numbering: "1")
-  set math.equation(numbering: "(1)")
   // show math.equation: set text(size: 14pt)
   show math.equation: it => {
       show regex("\d+\.\d+"): it => {show ".": {","+h(0pt)}
           it}
       it
   }
-  // set figure.caption(separator: [.])
+  // TODO: only number labeled equations
+  set math.equation(numbering: "(1)")
+  // set math.equation(numbering: (it) => {
+  //   str(it)
+  // })
+  // show math.equation: it => {
+  //   if it.at("label", default: none) != none {
+  //     let l = it.at("label")
+  //     let fields = (:)
+  //     for (field, value) in it.fields() {
+  //       if field not in ("label", "body") { fields.insert(field, value) }
+  //     }
+  //     [#math.equation(it.body, ..fields, numbering: "(1)")]
+  //   } else {
+  //     it
+  //   }
+  // }
+  // show math.equation: it => {
+  //   if it.at("label", default: none) != none {
+  //     it
+  //   } else {
+  //     let fields = (:)
+  //     for (field, value) in it.fields() {
+  //       if field not in ("label", "body") { fields.insert(field, value) }
+  //     }
+  //     math.equation(it.body, ..fields, numbering: none)
+  //   }
+  // }
+  // let ref_eq = counter("Referenced equations")
+  // show math.equation: it => {
+  //   let fields = (:)
+  //   for (field, value) in it.fields() {
+  //     if field not in ("numbering", "body", "label") { 
+  //       fields.insert(field, value) 
+  //     }
+  //   }
+  //   if it.at("label", default: none) != none {
+  //     ref_eq.step()
+  //     fields.numbering = (_) => {ref_eq.display(it.numbering)}
+  //   } else {
+  //     fields.numbering = none
+  //   }
+  //   // math.equation(it.body, ..fields)
+  //   it
+  // }
+  
   set par(leading: 0.55em) //first-line-indent: 1.8em
   set text(font: "New Computer Modern")
   show raw: set text(font: "New Computer Modern Mono")
   // #show par: set block(spacing: 0.55em)
   show heading: set block(above: 1.4em, below: 1em)
   set heading(numbering: "1.")
-  // #show figure.where(kind: image): set figure(supplement: [Рис.])
+
+  show figure.where(kind: image): it => {
+    show figure.caption: it => {
+      show "Рисунок": "Рис."
+      it
+    }
+    it
+  }
+  show figure.where(
+    kind: table
+  ): set figure.caption(position: top)
+  set figure.caption(separator: [. ])
+
+  set terms(separator: [*:* ])
 
   // #show figure: set block(breakable: true)
-
-  align(center, text(17pt)[
-    *Лабораторная работа #number \
-    #title \
-    #date*
-  ])
+  if title != none {
+    align(center, text(17pt)[
+      *Лабораторная работа #number \
+      #title \
+      #date*
+    ])
+  }
 
   set par(justify: true)
 
   body
 }
+
+// aliases:
+#let pm = math.plus.minus
 
 #let format(number, precision: 2, decimal_delim: ".", thousands_delim: ",") = {
   let integer = str(calc.floor(number))
@@ -57,6 +118,22 @@
   }
   integer + from_dot
 }
+
+// format
+#let f(number, digits) = {
+  format(float(number), precision: digits)
+}
+
+// convert to math
+#let m(text) = {
+  $#text$
+}
+
+#let TODO(c) = {
+  text(size: 20pt, "TODO " + c);
+}
+
+#conf([])
 
 // #figure({
 //     set math.equation(numbering: none)
