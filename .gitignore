@@ -2,3 +2,9 @@
 прога/
 resume/
 conf.pdf
+result
+.ipynb_checkpoints
+.vscode
+ignore
+.env
+__pycache__
