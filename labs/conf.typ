@@ -1,3 +1,5 @@
+#import "@preview/physica:0.8.0": expval
+
 #let conf(
   title: "Название лабы",
   number: "0.0.0",
@@ -119,9 +121,20 @@
   integer + from_dot
 }
 
+
 // format
-#let f(number, digits) = {
-  format(float(number), precision: digits)
+#let f(number, ..digits) = {
+  let digits = digits.pos().at(0, default: none)
+  if digits == none {
+    return $#number$
+  }
+  $#format(float(number), precision: digits)$
+}
+
+// multi format
+#let mf(args, digits) = {
+  assert.eq(digits.len(), args.len())
+  args.zip(digits).map(((v, d)) => f(v, d))
 }
 
 // convert to math
@@ -132,6 +145,8 @@
 #let TODO(c) = {
   text(size: 20pt, "TODO " + c);
 }
+
+#let stderr(s) = $sqrt(1/(N-1) sum_i (#s _i - expval(#s))^2)$
 
 #conf([])
 

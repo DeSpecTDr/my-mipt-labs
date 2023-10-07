@@ -84,6 +84,8 @@
                 # прога
                 pytelegrambotapi
                 xmltodict
+                defusedxml
+                translatepy
               ])
           )
         ];
