@@ -57,8 +57,8 @@
   //   } else {
   //     fields.numbering = none
   //   }
-  //   // math.equation(it.body, ..fields)
-  //   it
+  //   math.equation(it.body, ..fields)
+  //   // it
   // }
   
   set par(leading: 0.55em) //first-line-indent: 1.8em
@@ -137,6 +137,8 @@
   args.zip(digits).map(((v, d)) => f(v, d))
 }
 
+// let (args, kwargs) = (sink.pos(), sink.named())
+
 // convert to math
 #let m(text) = {
   $#text$
@@ -147,6 +149,34 @@
 }
 
 #let stderr(s) = $sqrt(1/(N-1) sum_i (#s _i - expval(#s))^2)$
+
+#let loadpy(data) = {
+  let rec_apply(t, f) = {
+      if type(t) == dictionary {
+          let temp = (:)
+          for (k, v) in t.pairs() {
+              temp.insert(k, rec_apply(v, f))
+          }
+          temp
+      } else if type(t) == array {
+          for v in t {
+              (rec_apply(v, f),)
+          }
+      } else {
+          f(t)
+      }
+  }
+
+
+  let parse_py(t) = {
+      if type(t) == str and t.starts-with("$") and t.ends-with("$") {
+          return eval(t.slice(1, t.len()-1), mode: "math")
+      }
+      t
+  }
+
+  rec_apply(data, parse_py)
+}
 
 #conf([])
 

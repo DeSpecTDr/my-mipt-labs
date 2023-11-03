@@ -10,8 +10,8 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  nixConfig.extra-substituters = ["https://numtide.cachix.org"];
-  nixConfig.extra-trusted-public-keys = ["numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="];
+  nixConfig.extra-substituters = ["https://numtide.cachix.org" "https://cuda-maintainers.cachix.org"];
+  nixConfig.extra-trusted-public-keys = ["numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="];
 
   outputs = inputs @ {
     self,
@@ -38,12 +38,15 @@
           # mold
           sageWithDoc
 
-          # pkg-config
+          pkg-config
           gcc
+          meson
           ninja
           cmake
           clang-tools
           llvmPackages_latest.clang
+          boost
+          rust-analyzer
 
           conda
 
@@ -65,6 +68,8 @@
                 scipy
                 astropy
                 pandas
+                seaborn
+                scikit-learn
                 odfpy
                 ephem # Compute positions of the planets and stars
                 # astroquery
@@ -80,6 +85,11 @@
                 # numba
                 # unfree.python310Packages.torch-bin
                 toml
+                uncertainties
+                (ps.callPackage ./pint.nix {})
+                babel
+                    
+                # pint-pandas
 
                 # прога
                 pytelegrambotapi
@@ -87,6 +97,11 @@
                 defusedxml
                 translatepy
               ])
+          )
+          (
+            unfree.python310.withPackages (ps: with ps; [
+              # torchWithRocm
+            ])
           )
         ];
         LD_LIBRARY_PATH = nixpkgs.lib.makeLibraryPath buildInputs;

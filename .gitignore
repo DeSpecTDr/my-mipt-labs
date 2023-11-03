@@ -8,3 +8,8 @@ result
 ignore
 .env
 __pycache__
+phys_sim2/
+phys_sim3/
+rust/
+.cache
+.~lock*
