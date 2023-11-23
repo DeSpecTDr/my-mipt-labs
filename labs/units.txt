@@ -1,16 +1,11 @@
-м = 1 * m
-# @alias м = m
+м = m
 с- = 1e-2
 м- = 1e-3
 к- = 1e3
-# см = 1 * centimeter
-# @alias см = centimeter = cm
-# мм = 1 * mm
-# @alias мм = millimeter = mm
+М- = 1e6
+Г- = 1e9
+
 г = g
-# @alias г = gram = g
-# @alias кг = kilogram = kg
 с = s
-# @alias с = second = s
 Н = N
-# @alias Н = neuton = N
+Па = pascal

@@ -178,6 +178,18 @@
   rec_apply(data, parse_py)
 }
 
+#let epssum(..sink) = {
+  let args = sink.pos()
+  let sum = args.map(i => {
+    if type(i) == array {
+      $#i.at(0) ((Delta #i.at(1))/#i.at(1))^2$
+    } else {
+      $((Delta #i)/#i)^2$
+    }
+  }).join($+$)
+  $sqrt(#sum)$
+}
+
 #conf([])
 
 // #figure({

@@ -35,7 +35,7 @@
           # sccache
           evcxr
           # rust-analyzer
-          # mold
+          mold
           sageWithDoc
 
           pkg-config
@@ -71,6 +71,7 @@
                 seaborn
                 scikit-learn
                 odfpy
+                openpyxl
                 ephem # Compute positions of the planets and stars
                 # astroquery
                 sympy
@@ -105,6 +106,8 @@
           )
         ];
         LD_LIBRARY_PATH = nixpkgs.lib.makeLibraryPath buildInputs;
+        # BOOST_INCLUDEDIR = "${pkgs.lib.getDev pkgs.boost}/include";
+        # BOOST_LIBRARYDIR = "${pkgs.lib.getLib pkgs.boost}/lib";
       };
     });
 }
