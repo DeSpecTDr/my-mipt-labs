@@ -1,23 +1,20 @@
-{ lib
-, buildPythonPackage
-, fetchPypi
-, pythonOlder
-
-# build-system
-, setuptools
-, setuptools-scm
-
-# propagates
-, typing-extensions
-
-# tests
-, pytestCheckHook
-, pytest-subtests
-, numpy
-, matplotlib
-, uncertainties
+{
+  lib,
+  buildPythonPackage,
+  fetchPypi,
+  pythonOlder,
+  # build-system
+  setuptools,
+  setuptools-scm,
+  # propagates
+  typing-extensions,
+  # tests
+  pytestCheckHook,
+  pytest-subtests,
+  numpy,
+  matplotlib,
+  uncertainties,
 }:
-
 buildPythonPackage rec {
   pname = "pint";
   version = "0.23rc0";
@@ -64,6 +61,6 @@ buildPythonPackage rec {
     description = "Physical quantities module";
     license = licenses.bsd3;
     homepage = "https://github.com/hgrecco/pint/";
-    maintainers = with maintainers; [ doronbehar ];
+    maintainers = with maintainers; [doronbehar];
   };
 }

@@ -4,6 +4,9 @@
   title: "Название лабы",
   number: "0.0.0",
   date: "1 января 1970 г.",
+  goal: [],
+  tools: [],
+  theory: [],
   body
 ) = {
   set document(title: number + " " + title)
@@ -93,6 +96,19 @@
 
   set par(justify: true)
 
+  [= Цели и задачи]
+  goal
+
+  [= Оборудование]
+  tools
+
+  [= Теория]
+  theory
+
+  // set heading(numbering: none)
+  set math.equation(numbering: none)
+
+  [= Ход работы]
   body
 }
 

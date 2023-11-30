@@ -1,30 +1,33 @@
 {
   description = "A basic flake with a shell";
   inputs = {
-    # nixpkgs.url = "nixpkgs";
-    nixpkgs-unfree.url = "github:numtide/nixpkgs-unfree";
-    nixpkgs-unfree.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs.url = "nixpkgs/nixpkgs-unstable";
+    nixpkgs-unfree = {
+      url = "github:numtide/nixpkgs-unfree";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     unstable.url = "nixpkgs/nixpkgs-unstable";
     unstable-small.url = "nixpkgs/nixos-unstable-small";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  nixConfig.extra-substituters = ["https://numtide.cachix.org" "https://cuda-maintainers.cachix.org"];
-  nixConfig.extra-trusted-public-keys = ["numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="];
+  nixConfig = {
+    extra-substituters = ["https://numtide.cachix.org" "https://cuda-maintainers.cachix.org"];
+    extra-trusted-public-keys = ["numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="];
+  };
 
   outputs = inputs @ {
     self,
     nixpkgs,
     nixpkgs-unfree,
     flake-utils,
-    unstable,
-    unstable-small,
+    ...
   }:
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
       unfree = nixpkgs-unfree.legacyPackages.${system};
-      small = unstable-small.legacyPackages.${system};
+      # small = unstable-small.legacyPackages.${system};
       # pkgs = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; };
       # unst = unstable.legacyPackages.${system};
       # packageOverrides = pkgs.callPackage ./python-packages.nix {};
@@ -46,6 +49,7 @@
           clang-tools
           llvmPackages_latest.clang
           boost
+          nlohmann_json
           rust-analyzer
 
           conda
@@ -89,7 +93,7 @@
                 uncertainties
                 (ps.callPackage ./pint.nix {})
                 babel
-                    
+
                 # pint-pandas
 
                 # прога
@@ -100,9 +104,10 @@
               ])
           )
           (
-            unfree.python310.withPackages (ps: with ps; [
-              # torchWithRocm
-            ])
+            unfree.python310.withPackages (ps:
+              with ps; [
+                # torchWithRocm
+              ])
           )
         ];
         LD_LIBRARY_PATH = nixpkgs.lib.makeLibraryPath buildInputs;
