@@ -27,7 +27,7 @@
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
       unfree = nixpkgs-unfree.legacyPackages.${system};
-      # small = unstable-small.legacyPackages.${system};
+      small = inputs.unstable-small.legacyPackages.${system};
       # pkgs = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; };
       # unst = unstable.legacyPackages.${system};
       # packageOverrides = pkgs.callPackage ./python-packages.nix {};
@@ -54,54 +54,63 @@
 
           conda
 
+          # small.typstfmt
+          # small.typst
           # small.typst-lsp
         ];
         buildInputs = [
           (
             pkgs.python311.withPackages
             (ps:
-              with ps; [
-                jupyter
-                black
-                # selenium
-                # jupyterhub
-                ipykernel
-                ipympl
-                matplotlib
-                numpy
-                scipy
-                astropy
-                pandas
-                seaborn
-                scikit-learn
-                odfpy
-                openpyxl
-                ephem # Compute positions of the planets and stars
-                # astroquery
-                sympy
-                opencv4
-                autopep8 # format cell
-                psutil
-                # pip
-                # virtualenv
-                # jupynium
-                # stingray
-                pyfftw
-                # numba
-                # unfree.python310Packages.torch-bin
-                toml
-                uncertainties
-                (ps.callPackage ./pint.nix {})
-                babel
+              with ps;
+              # let mypint = (ps.callPackage ./pint.nix {}); in
+                [
+                  jupyter
+                  black
+                  # selenium
+                  # jupyterhub
+                  ipykernel
+                  ipympl
+                  matplotlib
+                  numpy
+                  scipy
+                  astropy
+                  pandas
+                  seaborn
+                  scikit-learn
+                  odfpy
+                  openpyxl
+                  ephem # Compute positions of the planets and stars
+                  # astroquery
+                  sympy
+                  opencv4
+                  autopep8 # format cell
+                  psutil
+                  # pip
+                  # virtualenv
+                  # jupynium
+                  # stingray
+                  pyfftw
+                  # numba
+                  # unfree.python310Packages.torch-bin
+                  toml
+                  uncertainties
+                  pint
+                  # pint-pandas
+                  # mypint
+                  (ps.callPackage ./pint-pandas.nix {
+                    # pint=mypint;
+                  })
+                  babel
 
-                # pint-pandas
+                  # pint-pandas
 
-                # прога
-                pytelegrambotapi
-                xmltodict
-                defusedxml
-                translatepy
-              ])
+                  # прога
+                  pytelegrambotapi
+                  xmltodict
+                  defusedxml
+                  translatepy
+                ])
           )
           (
             unfree.python310.withPackages (ps:

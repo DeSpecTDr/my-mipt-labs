@@ -9,7 +9,7 @@
   theory: [],
   body
 ) = {
-  set document(title: number + " " + title)
+  set document(title: number + " " + title, date: none)
   set text(lang: "ru", size: 12pt)
   set page(margin: 1.5cm, numbering: "1")
   // show math.equation: set text(size: 14pt)
@@ -102,8 +102,10 @@
   [= Оборудование]
   tools
 
-  [= Теория]
-  theory
+  if theory != none {
+    [= Теория]
+    theory
+  }
 
   // set heading(numbering: none)
   set math.equation(numbering: none)
@@ -237,3 +239,59 @@
 //     it
 //   }
 // }
+
+#let f(number, ..precision) = {
+  let precision = precision.pos().at(0, default: 2)
+  if precision == none {
+    return $number$
+  }
+  assert(type(precision) == int or precision == -0.5)
+
+  let sci(n, r) = {
+    let p = calc.floor(calc.log(n))
+    $#f(n / calc.pow(10, p), r) dot 10^#p$
+  }
+
+  if precision == -0.5 {
+    return sci(number, 0)
+  }
+
+  if precision < 0 {
+    return sci(number, -precision)
+  }
+
+  let integer = str(calc.floor(number))
+  if precision == 0 {
+    return $integer$
+  }
+
+  let value = str(calc.round(number, digits: precision))
+  let from_dot = "." + if value == integer {
+    precision * "0"
+  } else {
+    let precision_diff = integer.len() + precision + 1 - value.len()
+    value.slice(integer.len() + 1) + precision_diff * "0"
+  }
+
+  integer = integer + from_dot
+  return $integer$
+}
+#let sci(n, r) = {
+  let p = calc.floor(calc.log(n))
+  $#f(n / calc.pow(10, p), r) dot 10^#p$
+}
+
+#let pytable(df, caption, ..round) = {
+  let round = round.pos().at(0, default: none) // HACK
+  let cols = df.at("cols")
+  if round == none {
+    round = (none,)*cols.len()
+  }
+  let vals = df.at("vals").map(v => v.zip(round).map(((i, r)) => f(i, r)))
+  figure(table(
+    columns: cols.len(),
+    ..cols,
+    ..vals.flatten()
+  ), caption: caption)
+}
+
